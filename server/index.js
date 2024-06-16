@@ -10,7 +10,25 @@ app.use(bodyParser.json());
 
 const secretKey = "uvwxyz";
 
-const users = [];
+let users = [
+    {
+      username: "praveenan",
+      password: "pwd@123",
+    },
+    {
+      username: "user",
+      password: "user@123",
+    },
+    
+  ];
+  
+  const hashPasswords = async () => {
+    
+    users = await Promise.all(users.map(async (user) => ({
+      ...user,
+      password: await bcrypt.hash(user.password, 10),
+    })));
+  };
 
 const verifyToken = (req,res,next) => {
     const token = req.headers.authorization;
@@ -27,18 +45,7 @@ const verifyToken = (req,res,next) => {
     }
 }
 
-app.post('/signUp',async(req,res) => {
-    try{
-        const {username,password} = req.body;
-        const hashPassword = await bcrypt.hash(password, 12);
-        users.push({username,password : hashPassword});
-        console.log(users);
 
-        res.status(201).send("User created Successfully!");
-    }catch(error){
-        res.status(500).send("Error Creating User.");
-    }
-})
 
 app.post('/login', async(req, res) => {
     try{
@@ -60,11 +67,18 @@ app.post('/login', async(req, res) => {
 })
 
 app.get('/home', verifyToken, (req,res) =>{
-    res.send(`Welcome ${req.user.username}`);
+    res.send(`${req.user.username}`);
 })
 
 app.get('/', (req,res) => {
     res.send("Welcome User");
 })
 
-app.listen(3001,() => console.log("Backend is running in the port 3001."),)
+const startServer = async () => {
+    await hashPasswords(); 
+    app.listen(3001, () => console.log("Backend running in the port 3001"));
+  };
+
+  startServer().catch((error) => {
+    console.error("Failed to start server:", error);
+  });

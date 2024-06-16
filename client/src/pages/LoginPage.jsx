@@ -1,7 +1,29 @@
-import React from 'react'
+import React,{useContext, useState} from 'react'
 import background from "../assets/Background.png";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 export default function LoginPage() {
+    const {dispatch} = useContext(AuthContext);
+    const navigate = useNavigate();
+    const[username, setUsername] = useState("");
+    const[password, setPassword] = useState("");
+    const handleLogin = async() =>{
+        const response = await axios.post('http://localhost:3001/login',{
+            username : username, password : password
+        });
+
+        dispatch({
+            type : "LOGIN",
+            payload : response.data.token
+        })
+
+        localStorage.setItem('token', response.data.token);
+
+        navigate('/home');
+    }
+
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       <img
@@ -45,6 +67,10 @@ export default function LoginPage() {
                   id="pass"
                   className="w-full md: px-10 p-3 focus:ring-0  rounded placeholder:font-semibold text-sm md:text-bold placeholder: text-primary font-semibold focus:outline-none focus:border-transparent"
                   placeholder="Username"
+                  value={username}
+                      onChange={(event) => {
+                        setUsername(event.target.value);
+                      }}
                 />
               </div>
               <div className="m-10">
@@ -70,11 +96,17 @@ export default function LoginPage() {
                   id="pass"
                   className="focus:border-secondary w-full p-3 px-10 text-sm md:text-bold   rounded placeholder:font-semibold placeholder: text-primary font-semibold focus:outline-none focus:border-transparent"
                   placeholder="Password"
+                  value={password}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                      }}
                 />
               </div>
+              
               <button
                 type="button"
                 class="py-2  bg-primary hover:bg-hover-button hover:text-primary hover:border-primary  focus:ring-primary text-white px-4 md:px-10 transform hover:scale-110 duration-200 text-center text-base font-bold shadow-md focus:outline-none focus:ring-0 focus:ring-offset-0  rounded-md "
+                onClick={handleLogin}
               >
                 Login Now
               </button>
