@@ -9,20 +9,34 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
-    const handleLogin = async() =>{
-        const response = await axios.post('http://localhost:3001/login',{
-            username : username, password : password
-        });
+    const [error, setError] = useState("");
 
-        dispatch({
-            type : "LOGIN",
-            payload : response.data.token
-        })
+    const handleLogin = async (event) => {
+    event.preventDefault();
 
-        localStorage.setItem('token', response.data.token);
+    try {
+      const response = await axios.post("http://localhost:3001/login", {
+        username: username,
+        password: password,
+      });
 
-        navigate('/home');
+      dispatch({
+        type: "LOGIN",
+        payload: response.data.token,
+      });
+
+      localStorage.setItem("token", response.data.token);
+
+      navigate("/home");
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message || "Invalid username or password");
+      } else {
+        setError("Network error. Please try again later.");
+      }
     }
+  };
+
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -102,7 +116,7 @@ export default function LoginPage() {
                       }}
                 />
               </div>
-              
+              {error && <div className="mb-4 text-red-600 text-lg">{error}</div>}
               <button
                 type="button"
                 class="py-2  bg-primary hover:bg-hover-button hover:text-primary hover:border-primary  focus:ring-primary text-white px-4 md:px-10 transform hover:scale-110 duration-200 text-center text-base font-bold shadow-md focus:outline-none focus:ring-0 focus:ring-offset-0  rounded-md "
