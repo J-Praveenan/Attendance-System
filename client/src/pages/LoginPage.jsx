@@ -48,7 +48,7 @@ export default function LoginPage() {
 
       <form className="relative flex items-center justify-center h-full ">
         <div
-          className="flex items-center justify-center rounded-2xl bg-gradient-to-r shadow-2xl  blue-900/10   md:px-56 px-8 py-12 md:py-32 sm:hover:border-gray-300 transform sm:hover:scale-110 
+          className="flex items-center justify-center rounded-2xl bg-gradient-to-r shadow-2xl  blue-900/10   md:px-56 px-8 py-40 md:py-32 sm:hover:border-gray-300 transform sm:hover:scale-110 
         duration-110 md:hover:scale-100 transition-transform duration-0"
         >
           <div

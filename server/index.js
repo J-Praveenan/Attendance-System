@@ -12,7 +12,7 @@ const secretKey = "uvwxyz";
 
 let users = [
     {
-      username: "praveenan",
+      username: "Praveenan",
       password: "pwd@123",
     },
     {
